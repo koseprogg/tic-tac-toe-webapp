@@ -1,7 +1,7 @@
 enum CellValue {
-    Empty = ' ',
-    X = 'X',
-    O = 'O'
+  Empty = " ",
+  X = "X",
+  O = "O",
 }
 
 type Player = CellValue.X | CellValue.O;
@@ -13,9 +13,10 @@ type SuperBoard = Array<Array<CellValue>>;
 type SubBoard = Array<Array<CellValue>>;
 
 type Move = {
-    x: number,
-    y: number
-    player: Player
-}
+  x: number;
+  y: number;
+  player: Player;
+};
 
-export {CellValue, SuperBoard, SubBoard, Move, Player};
+export { CellValue };
+export type { SuperBoard, SubBoard, Move, Player };
