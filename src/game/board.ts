@@ -106,7 +106,6 @@ class Board {
         superBoards[x].push(this.getSuperCell(x, y));
       }
     }
-    console.log(superBoards);
 
     return Board.calculateWinnerOfSubBoard(superBoards);
   }
