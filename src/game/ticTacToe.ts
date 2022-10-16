@@ -6,7 +6,7 @@ import type { Move, Player } from "./types";
 class TicTacToe {
   private board: Board;
   private currentPlayer: Player;
-  private history: Array<Move>;
+  private history: Move[];
   constructor(startingPlayer: Player) {
     this.board = new Board();
     this.currentPlayer = startingPlayer;
@@ -53,7 +53,7 @@ class TicTacToe {
     return this.currentPlayer;
   }
 
-  get legalMoves(): Array<Move> {
+  get legalMoves(): Move[] {
     // For the first move, all moves are legal
     if (this.history.length === 0) {
       return Array(81)
@@ -81,7 +81,7 @@ class TicTacToe {
       CellValue.Empty
     ) {
       // If the subboard has no winner, you must play in that subboard
-      const moves: Array<Move> = [];
+      const moves: Move[] = [];
       for (let x = 0; x < 3; x++) {
         for (let y = 0; y < 3; y++) {
           if (
@@ -102,7 +102,7 @@ class TicTacToe {
       return moves;
     } else {
       // If the subboard has a winner, you can play anywhere that is empty and the subboard is not won
-      const moves: Array<Move> = [];
+      const moves: Move[] = [];
       for (let x = 0; x < 9; x++) {
         for (let y = 0; y < 9; y++) {
           if (

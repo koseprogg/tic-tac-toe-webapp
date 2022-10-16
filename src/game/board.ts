@@ -1,4 +1,5 @@
-import { CellValue, Move, Player, SubBoard, SuperBoard } from "./types";
+import { CellValue } from "./types";
+import type { Move, Player, SubBoard, SuperBoard } from "./types";
 
 class Board {
   private board: SuperBoard;

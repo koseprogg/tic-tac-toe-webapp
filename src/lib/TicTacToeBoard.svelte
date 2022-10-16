@@ -1,11 +1,11 @@
 <script lang="ts">
-  //import { TicTacToe } from "src/game/ticTacToe";
+  import type { TicTacToe } from "src/game/ticTacToe";
 
-  export let game;
+  export let game: TicTacToe;
 
   //create board object that is easy to use in svelte
   // It is a 3x3 array of 3x3 arrays (with a field for winner of the subBoard)
-  const getBoard = (game) => {
+  const getBoard = (game: TicTacToe) => {
     const board = [];
     for (let x = 0; x < 3; x++) {
       board.push([]);
@@ -23,8 +23,6 @@
         board[x].push(subBoard);
       }
     }
-    console.log(board);
-
     return board;
   };
 
