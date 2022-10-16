@@ -1,6 +1,7 @@
 import type { MakeOptional } from "../util/makeOptional";
 import { Board } from "./board";
-import { CellValue, Move, Player } from "./types";
+import { CellValue } from "./types";
+import type { Move, Player } from "./types";
 
 class TicTacToe {
   private board: Board;
@@ -37,6 +38,19 @@ class TicTacToe {
 
   getCell(x: number, y: number): CellValue {
     return this.board.getCell(x, y);
+  }
+
+  getSuperCell(x: number, y: number): CellValue {
+    return this.board.getSuperCell(x, y);
+  }
+
+  get winner(): CellValue {
+    // Return the winner of the entire board
+    return this.board.winner;
+  }
+
+  get current(): Player {
+    return this.currentPlayer;
   }
 
   get legalMoves(): Array<Move> {
