@@ -1,5 +1,5 @@
 import { CellValue } from "./types";
-import type { Move, Player, SubBoard, SuperBoard } from "./types";
+import type { Move, PlayerPiece, SubBoard, SuperBoard } from "./types";
 
 class Board {
   private board: SuperBoard;
