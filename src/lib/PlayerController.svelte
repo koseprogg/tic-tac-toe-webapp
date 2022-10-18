@@ -9,6 +9,12 @@
       method: "POST",
       body: gameDataToBots($game),
     });
+    await response.json().then((res: { move: Move }) => {
+      game.update((gm) => {
+        gm.makeMove(res.move);
+        return gm;
+      });
+    });
   };
 </script>
 
