@@ -1,13 +1,13 @@
 import type { MakeOptional } from "../util/makeOptional";
 import { Board } from "./board";
 import { CellValue } from "./types";
-import type { Move, Player } from "./types";
+import type { Move, PlayerPiece } from "./types";
 
 class TicTacToe {
   private board: Board;
-  private currentPlayer: Player;
-  private history: Move[];
-  constructor(startingPlayer: Player) {
+  private currentPlayer: PlayerPiece;
+  history: Move[];
+  constructor(startingPlayer: PlayerPiece) {
     this.board = new Board();
     this.currentPlayer = startingPlayer;
     this.history = [];
@@ -49,7 +49,7 @@ class TicTacToe {
     return this.board.winner;
   }
 
-  get current(): Player {
+  get current(): PlayerPiece {
     return this.currentPlayer;
   }
 

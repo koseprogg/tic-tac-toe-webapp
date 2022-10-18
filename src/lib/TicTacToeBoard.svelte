@@ -1,12 +1,21 @@
 <script lang="ts">
-  import type { TicTacToe } from "src/game/ticTacToe";
-
-  export let game: TicTacToe;
-
+  import type { CellValue, Move } from "../game/types";
+  import type { MakeOptional } from "../util/makeOptional";
+  import { game } from "../stores/gameStore";
+  import { currentPlayer, xPlayer } from "../stores/playerStore";
   //create board object that is easy to use in svelte
   // It is a 3x3 array of 3x3 arrays (with a field for winner of the subBoard)
-  const getBoard = (game: TicTacToe) => {
-    const board = [];
+
+  const makeMove = (move: MakeOptional<Move, "player">) => {
+    game.update((gm) => {
+      gm.makeMove(move);
+      return gm;
+    });
+  };
+
+  let board;
+  game.subscribe((game) => {
+    board = [];
     for (let x = 0; x < 3; x++) {
       board.push([]);
       for (let y = 0; y < 3; y++) {
@@ -23,16 +32,7 @@
         board[x].push(subBoard);
       }
     }
-    return board;
-  };
-
-  $: board = getBoard(game);
-  $: winner = game.winner;
-
-  let makeMove = (x, y) => {
-    game.makeMove({ x: x, y: y });
-    game = game;
-  };
+  });
 </script>
 
 <main>
@@ -49,7 +49,14 @@
                 {#each row as cell, j}
                   <div
                     class="cell"
-                    on:click={() => makeMove(x * 3 + i, y * 3 + j)}
+                    class:clickable={$game.legalMoves.some(
+                      (move) => move.x === x * 3 + i && move.y === y * 3 + j
+                    )}
+                    on:click={$currentPlayer == ""
+                      ? () => makeMove({ x: x * 3 + i, y: y * 3 + j })
+                      : () => {
+                          throw new Error("Bot's turn");
+                        }}
                   >
                     {cell}
                   </div>
@@ -71,6 +78,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  main {
+    display: flex;
+    justify-content: center;
   }
   .board {
     display: flex;
@@ -99,5 +110,9 @@
   }
   .subRow {
     display: flex;
+  }
+
+  .clickable {
+    background-color: #09501027;
   }
 </style>
