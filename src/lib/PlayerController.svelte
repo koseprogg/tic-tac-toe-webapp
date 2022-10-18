@@ -7,6 +7,10 @@
   const makeBotMove = async () => {
     const response = await fetch($currentPlayer, {
       method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body: gameDataToBots($game),
     });
     await response.json().then((res: { move: Move }) => {
