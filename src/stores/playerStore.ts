@@ -1,4 +1,4 @@
-import { CellValue } from "../game/types";
+import { CellValue } from "../ultimateGame/types";
 import { derived, writable } from "svelte/store";
 import { game } from "./gameStore";
 

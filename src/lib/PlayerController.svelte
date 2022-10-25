@@ -5,10 +5,12 @@
   import { gameDataToBots } from "../util/gameDataToBots";
 
   const makeBotMove = async () => {
+    console.log(gameDataToBots($game));
+
     const response = await fetch($currentPlayer, {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: gameDataToBots($game),

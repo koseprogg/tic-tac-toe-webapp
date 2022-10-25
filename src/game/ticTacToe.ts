@@ -40,10 +40,6 @@ class TicTacToe {
     return this.board.getCell(x, y);
   }
 
-  getSuperCell(x: number, y: number): CellValue {
-    return this.board.getSuperCell(x, y);
-  }
-
   get winner(): CellValue {
     // Return the winner of the entire board
     return this.board.winner;
@@ -54,72 +50,23 @@ class TicTacToe {
   }
 
   get legalMoves(): Move[] {
-    // For the first move, all moves are legal
-    if (this.history.length === 0) {
-      return Array(81)
-        .fill(0)
-        .map((_, i) => {
-          return {
-            x: Math.floor(i / 9),
-            y: i % 9,
-            player: this.currentPlayer,
-          };
-        });
-    }
-
     // If the board has a winner, no moves are legal
     if (this.board.winner !== CellValue.Empty) {
       return [];
     }
 
-    // The previous move decides which 3x3 board is legal
-    const previousMove = this.history[this.history.length - 1];
+    // All empty cells are legal
 
-    const nextSubBoard = { x: previousMove.x % 3, y: previousMove.y % 3 };
-    if (
-      this.board.getSuperCell(nextSubBoard.x, nextSubBoard.y) ===
-      CellValue.Empty
-    ) {
-      // If the subboard has no winner, you must play in that subboard
-      const moves: Move[] = [];
-      for (let x = 0; x < 3; x++) {
-        for (let y = 0; y < 3; y++) {
-          if (
-            this.board.getCell(
-              x + nextSubBoard.x * 3,
-              y + nextSubBoard.y * 3
-            ) === CellValue.Empty
-          ) {
-            moves.push({
-              x: x + nextSubBoard.x * 3,
-              y: y + nextSubBoard.y * 3,
-              player: this.currentPlayer,
-            });
-          }
-        }
-      }
-
-      return moves;
-    } else {
-      // If the subboard has a winner, you can play anywhere that is empty and the subboard is not won
-      const moves: Move[] = [];
-      for (let x = 0; x < 9; x++) {
-        for (let y = 0; y < 9; y++) {
-          if (
-            this.board.getCell(x, y) === CellValue.Empty &&
-            this.board.getSuperCell(Math.floor(x / 3), Math.floor(y / 3)) ===
-              CellValue.Empty
-          ) {
-            moves.push({
-              x,
-              y,
-              player: this.currentPlayer,
-            });
-          }
-        }
-      }
-      return moves;
-    }
+    return Array(3 * 3)
+      .fill(0)
+      .map((_, i) => {
+        return {
+          x: Math.floor(i / 3),
+          y: i % 3,
+          player: this.currentPlayer,
+        };
+      })
+      .filter((move) => this.board.getCell(move.x, move.y) === CellValue.Empty);
   }
 }
 

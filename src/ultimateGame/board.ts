@@ -1,21 +1,21 @@
 import { CellValue } from "./types";
-import type { Move, PlayerPiece, Grid } from "./types";
+import type { Move, PlayerPiece, SubBoard, SuperBoard } from "./types";
 
 class Board {
-  private board: Grid;
+  private board: SuperBoard;
 
   constructor() {
-    // Construct a 3x3 board of empty cells
+    // Construct a 9x9 board of empty cells
     this.board = [];
-    for (let x = 0; x < 3; x++) {
+    for (let x = 0; x < 9; x++) {
       this.board.push([]);
-      for (let y = 0; y < 3; y++) {
+      for (let y = 0; y < 9; y++) {
         this.board[x].push(CellValue.Empty);
       }
     }
   }
 
-  get winner(): CellValue {
+  static calculateWinnerOfSubBoard(subBoard: SubBoard): CellValue {
     //Calculate winner of a 3x3 board
     const winningCombinations = [
       //Horizontal
@@ -67,11 +67,11 @@ class Board {
       let [a, b, c] = combination;
 
       if (
-        this.board[a[0]][a[1]] !== CellValue.Empty &&
-        this.board[a[0]][a[1]] === this.board[b[0]][b[1]] &&
-        this.board[a[0]][a[1]] === this.board[c[0]][c[1]]
+        subBoard[a[0]][a[1]] !== CellValue.Empty &&
+        subBoard[a[0]][a[1]] === subBoard[b[0]][b[1]] &&
+        subBoard[a[0]][a[1]] === subBoard[c[0]][c[1]]
       ) {
-        return this.board[a[0]][a[1]];
+        return subBoard[a[0]][a[1]];
       }
     }
 
@@ -87,6 +87,28 @@ class Board {
     // Place a value on the board
 
     this.board[move.x][move.y] = move.player;
+  }
+
+  getSuperCell(x: number, y: number): CellValue {
+    return Board.calculateWinnerOfSubBoard(
+      this.board
+        .slice(x * 3, x * 3 + 3)
+        .map((row) => row.slice(y * 3, y * 3 + 3))
+    );
+  }
+
+  get winner(): CellValue {
+    // Return the winner of the entire board
+
+    let superBoards = [];
+    for (let x = 0; x < 3; x++) {
+      superBoards.push([]);
+      for (let y = 0; y < 3; y++) {
+        superBoards[x].push(this.getSuperCell(x, y));
+      }
+    }
+
+    return Board.calculateWinnerOfSubBoard(superBoards);
   }
 }
 

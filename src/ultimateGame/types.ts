@@ -7,7 +7,10 @@ enum CellValue {
 type PlayerPiece = CellValue.X | CellValue.O;
 
 //This represents a 9x9 board
-type Grid = CellValue[][];
+type SuperBoard = CellValue[][];
+
+//This represents a 3x3 board
+type SubBoard = CellValue[][];
 
 type Move = {
   x: number;
@@ -16,4 +19,4 @@ type Move = {
 };
 
 export { CellValue };
-export type { Grid, Move, PlayerPiece };
+export type { SuperBoard, SubBoard, Move, PlayerPiece };

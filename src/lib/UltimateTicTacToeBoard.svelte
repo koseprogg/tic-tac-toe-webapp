@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { CellValue, Move } from "../game/types";
   import type { MakeOptional } from "../util/makeOptional";
-  import { game } from "../stores/gameStore";
+  import { game } from "../stores/ultimateGameStore";
   import { currentPlayer, xPlayer } from "../stores/playerStore";
   //create board object that is easy to use in svelte
   // It is a 3x3 array of 3x3 arrays (with a field for winner of the subBoard)
@@ -19,7 +19,17 @@
     for (let x = 0; x < 3; x++) {
       board.push([]);
       for (let y = 0; y < 3; y++) {
-        board[x].push(game.getCell(x, y));
+        const subBoard = {
+          winner: game.getSuperCell(x, y),
+          cells: [],
+        };
+        for (let i = 0; i < 3; i++) {
+          subBoard.cells.push([]);
+          for (let j = 0; j < 3; j++) {
+            subBoard.cells[i].push(game.getCell(x * 3 + i, y * 3 + j));
+          }
+        }
+        board[x].push(subBoard);
       }
     }
   });
@@ -27,21 +37,32 @@
 
 <main>
   <div class="board">
-    {#each board as row, x}
+    {#each board as superRow, x}
       <div class="row">
-        {#each row as cell, y}
-          <div
-            class="cell"
-            class:clickable={$game.legalMoves.some(
-              (move) => move.x === x && move.y === y
-            )}
-            on:click={$currentPlayer == ""
-              ? () => makeMove({ x: x, y: y })
-              : () => {
-                  throw new Error("Bot's turn");
-                }}
-          >
-            {cell}
+        {#each superRow as subBoard, y}
+          <div class="subBoard">
+            <div class="subBoardWinner">
+              {subBoard.winner}
+            </div>
+            {#each subBoard.cells as row, i}
+              <div class="subRow">
+                {#each row as cell, j}
+                  <div
+                    class="cell"
+                    class:clickable={$game.legalMoves.some(
+                      (move) => move.x === x * 3 + i && move.y === y * 3 + j
+                    )}
+                    on:click={$currentPlayer == ""
+                      ? () => makeMove({ x: x * 3 + i, y: y * 3 + j })
+                      : () => {
+                          throw new Error("Bot's turn");
+                        }}
+                  >
+                    {cell}
+                  </div>
+                {/each}
+              </div>
+            {/each}
           </div>
         {/each}
       </div>
