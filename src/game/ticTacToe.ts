@@ -40,6 +40,12 @@ class TicTacToe {
     return this.board.getCell(x, y);
   }
 
+  restart(): void {
+    this.board = new Board();
+    this.history = [];
+    this.currentPlayer = Math.random() < 0.5 ? CellValue.X : CellValue.O;
+  }
+
   get winner(): CellValue {
     // Return the winner of the entire board
     return this.board.winner;

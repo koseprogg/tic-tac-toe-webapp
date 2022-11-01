@@ -39,7 +39,7 @@
   </div>
   <button disabled={$currentPlayer === ""} on:click={() => makeBotMove()}
     >Next Move</button
-  >
+  ><br />
 </div>
 
 <style>
