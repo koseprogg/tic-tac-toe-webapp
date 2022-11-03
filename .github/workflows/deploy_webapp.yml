@@ -1,5 +1,9 @@
 name: Deploy webapp
 
+on:
+  push:
+
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
