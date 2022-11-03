@@ -33,7 +33,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Deploy
-        if: env.BRANCH_NAME == 'main' || true
+        if: env.BRANCH_NAME == 'main'
         working-directory: ./webapp/dist
 
         run: |
