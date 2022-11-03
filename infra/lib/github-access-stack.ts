@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
 // inspiration: https://github.com/dannysteenman/aws-cdk-examples/blob/main/openid-connect-github/main.ts
@@ -66,6 +67,15 @@ class GithubAccessStack extends cdk.Stack {
     });
 
     props.deploymentBucket.grantWrite(openidConnectRole);
+
+    openidConnectRole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [
+          "arn:aws:lambda:eu-west-1:859141738257:function:KoseproggInfraStackKosepr-KoseproggWebappDeployF99-HTb9UxvXUezu",
+        ],
+        actions: ["lambda:InvokeFunction"],
+      })
+    );
   }
 }
 
