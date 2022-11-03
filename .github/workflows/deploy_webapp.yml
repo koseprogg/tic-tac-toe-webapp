@@ -3,10 +3,17 @@ name: Deploy webapp
 on:
   push:
 
+env:
+  ACCOUNT_ID: "859141738257"
+  ARTIFACTS_BUCKET: "koseprogg-event-webapp-artifacts"
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
+    permissions:
+      actions: write
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v3
       - name: Lint and build code
@@ -17,8 +24,16 @@ jobs:
           npm run build
           npm run test
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::$ACCOUNT:role/GithubDeployRole
+          aws-region: eu-west-1
+
       - name: Deploy
         if: env.BRANCH_NAME == 'main' || true
         working-directory: ./webapp/dist
+
         run: |
           zip -r index.zip .
+          aws s3 cp index.zip s3://$ARTIFACTS_BUCKET/app/latest.zip
