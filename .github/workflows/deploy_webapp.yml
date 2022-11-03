@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - run: cd webapp
       - run: npm install
       - run: npm run lint
       - run: npm run build
