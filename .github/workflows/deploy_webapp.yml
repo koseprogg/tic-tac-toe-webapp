@@ -6,6 +6,8 @@ on:
 env:
   ACCOUNT_ID: "859141738257"
   ARTIFACTS_BUCKET: "koseprogg-event-webapp-artifacts"
+  FUNCTION_NAME: "KoseproggInfraStackKosepr-KoseproggWebappDeployF99-HTb9UxvXUezu"
+
 
 jobs:
   build-and-deploy:
@@ -37,3 +39,8 @@ jobs:
         run: |
           zip -r index.zip .
           aws s3 cp index.zip s3://$ARTIFACTS_BUCKET/app/latest.zip
+          aws lambda invoke \
+          --function-name $FUNCITON_NAME \
+          --cli-binary-format raw-in-base64-out \
+          --payload "{\"artifactS3Url\": \"s3://$ARTIFACTS_BUCKET/app/latest.zip\"}" \
+          /tmp/out.log
