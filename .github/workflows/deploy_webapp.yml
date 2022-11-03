@@ -19,7 +19,6 @@ jobs:
 
       - name: Deploy
         if: env.BRANCH_NAME == 'main' || true
-        working-directory: ./webapp
+        working-directory: ./webapp/dist
         run: |
           zip -r index.zip .
-          ls dist
