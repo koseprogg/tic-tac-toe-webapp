@@ -3,8 +3,13 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as lifligCdk from "@liflig/cdk";
 import * as webappDeploy from "@capraconsulting/webapp-deploy-lambda";
 import { Construct } from "constructs";
+import GithubAccessStack from "./github-access-stack";
 
 interface Props extends cdk.StackProps {}
+
+export interface GitHubStackProps extends cdk.StackProps {
+  readonly repositoryConfig: { owner: string; repo: string; filter?: string }[];
+}
 
 class WebappStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -19,6 +24,18 @@ class WebappStack extends cdk.Stack {
     webapp.addDeployment(
       webappDeploy.Source.bucket(artifactsBucket, "app/latest.zip")
     );
+
+    new GithubAccessStack(this, "KoseproggGithubActionsAccess", {
+      deployRole: "GithubDeployRole",
+      repositoryConfig: [
+        {
+          owner: "koseprogg",
+          repo: "tic-tac-toe-webapp",
+          filter: "main",
+        },
+      ],
+      deploymentBucket: artifactsBucket,
+    });
   }
 }
 
