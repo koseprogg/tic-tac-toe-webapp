@@ -32,6 +32,8 @@ jobs:
           role-to-assume: arn:aws:iam::859141738257:role/GithubDeployRole
           aws-region: eu-west-1
 
+      - run: echo "BRANCH_NAME=$(echo ${GITHUB_REF##*/})" >> "$GITHUB_ENV"
+
       - name: Deploy
         if: env.BRANCH_NAME == 'main'
         working-directory: ./webapp/dist
