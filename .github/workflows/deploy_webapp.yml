@@ -1,0 +1,46 @@
+name: Deploy webapp
+
+on:
+  push:
+
+env:
+  ACCOUNT_ID: "859141738257"
+  ARTIFACTS_BUCKET: "koseprogg-event-webapp-artifacts"
+  FUNCITON_NAME: "KoseproggInfraStackKosepr-KoseproggWebappDeployF99-HTb9UxvXUezu"
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: write
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint and build code
+        working-directory: ./webapp
+        run: |
+          npm install
+          npm run lint
+          npm run build
+          npm run test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::859141738257:role/GithubDeployRole
+          aws-region: eu-west-1
+
+      - name: Deploy
+        if: env.BRANCH_NAME == 'main'
+        working-directory: ./webapp/dist
+
+        run: |
+          zip -r index.zip .
+          aws s3 cp index.zip s3://$ARTIFACTS_BUCKET/app/latest.zip
+          aws lambda invoke \
+          --function-name $FUNCITON_NAME \
+          --cli-binary-format raw-in-base64-out \
+          --payload "{\"artifactS3Url\": \"s3://$ARTIFACTS_BUCKET/app/latest.zip\"}" \
+          /tmp/out.log
