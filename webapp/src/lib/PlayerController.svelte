@@ -10,9 +10,12 @@
   import { CellValue, type Move } from "../game/types";
   import { gameDataToBots } from "../util/gameDataToBots";
 
+  let waitingForResponse = false;
+
   const makeBotMove = async () => {
     console.log(gameDataToBots($game));
 
+    waitingForResponse = true;
     const response = await fetch($currentPlayer, {
       method: "POST",
       headers: {
@@ -21,6 +24,7 @@
       },
       body: gameDataToBots($game),
     });
+    waitingForResponse = false;
     await response.json().then((res: { move: Move }) => {
       game.update((gm) => {
         gm.makeMove(res.move);
@@ -51,8 +55,9 @@
       <input type="text" bind:value={$oPlayer} placeholder="URL" />
     </div>
   </div>
-  <button disabled={$currentPlayer === ""} on:click={() => makeBotMove()}
-    >Next Move</button
+  <button
+    disabled={$currentPlayer === "" || waitingForResponse}
+    on:click={() => makeBotMove()}>Next Move</button
   ><br />
 </div>
 
